@@ -3,7 +3,7 @@
     "author": "ktakasak <ke0i8su0ke5@yahoo.co.jp>",
     "license": "MIT",
     "scripts": {
-        "test": "jest"
+        "test": "TZ='Asia/Tokyo' jest"
     },
     "devDependencies": {
         "jest":"26.1.0"
