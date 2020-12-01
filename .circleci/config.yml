@@ -33,5 +33,5 @@ workflows:
     jobs:
       - setup
       - test_jest
-        requies:
+        requires:
           - setup
