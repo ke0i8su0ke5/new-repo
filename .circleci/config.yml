@@ -1,19 +1,37 @@
-version: 2.1
-jobs:
-  slack_test:
+executers:
+  default:
     docker:
       - image: cimg/node:lts
+    working_directory: ~/repo
+version: 2.1
+jobs:
+  setup:
+    executer: default
     steps:
+      - checkout
       - run:
-          name: SlackにメッセージをPOSTする
-          command: |
-            curl -X POST \
-            -H 'Content-type:application/json' \
-            --data "{text:'Hi!'}" ${SLACK_WEBHOOK}
+          name: Nodeモジュールのインストール
+          command: yarn install
+      - persist_to_workspace:
+        root: ~/repo
+        paths:
+          - node_modules
+
+  test_jest:
+    executor: default
+    steps:
+      - checkout
+      - attache_workspace:
+          at: .
+      - run:
+          name: Jestを実行
+          command: npx jest --ci --maxWorkers=2
 
 workflows:
   version: 2
-  main:
+  build_test:
     jobs:
-      - slack_test:
-          context: SLACK_INTEGRATION
+      - setup
+      - test_jest
+        requies:
+          - setup
