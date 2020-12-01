@@ -1,37 +1,38 @@
-executers:
+executors:
   default:
     docker:
       - image: cimg/node:lts
     working_directory: ~/repo
+
 version: 2.1
 jobs:
   setup:
-    executer: default
+    executor: default
     steps:
       - checkout
       - run:
           name: Nodeモジュールのインストール
           command: yarn install
       - persist_to_workspace:
-        root: ~/repo
-        paths:
-          - node_modules
+          root: ~/repo
+          paths:
+            - node_modules
 
   test_jest:
     executor: default
     steps:
       - checkout
-      - attache_workspace:
+      - attach_workspace:
           at: .
       - run:
           name: Jestを実行
-          command: npx jest --ci --maxWorkers=2
+          coomand: npx jest --ci --maxWorkers=2
 
 workflows:
   version: 2
   build_test:
     jobs:
       - setup
-      - test_jest
-        requires:
-          - setup
+      - test_jest:
+          requires:
+            - setup
